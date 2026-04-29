@@ -21,11 +21,14 @@ if (!AHA_DOMAIN) {
   throw new Error("AHA_DOMAIN environment variable is required");
 }
 
+const ahaApiToken: string = AHA_API_TOKEN;
+const ahaDomain: string = AHA_DOMAIN;
+
 const client = new GraphQLClient(
-  `https://${AHA_DOMAIN}.aha.io/api/v2/graphql`,
+  `https://${ahaDomain}.aha.io/api/v2/graphql`,
   {
     headers: {
-      Authorization: `Bearer ${AHA_API_TOKEN}`,
+      Authorization: `Bearer ${ahaApiToken}`,
     },
   }
 );
@@ -47,7 +50,11 @@ class AhaMcp {
       }
     );
 
-    this.handlers = new Handlers(client);
+    this.handlers = new Handlers(
+      client,
+      `https://${ahaDomain}.aha.io/api/v1`,
+      ahaApiToken
+    );
     this.setupToolHandlers();
 
     this.server.onerror = (error) => console.error("[MCP Error]", error);
@@ -62,14 +69,15 @@ class AhaMcp {
       tools: [
         {
           name: "get_record",
-          description: "Get an Aha! feature or requirement by reference number",
+          description:
+            "Get an Aha! feature, requirement, or initiative by reference number",
           inputSchema: {
             type: "object",
             properties: {
               reference: {
                 type: "string",
                 description:
-                  "Reference number (e.g., DEVELOP-123 or ADT-123-1)",
+                  "Reference number (e.g., DEVELOP-123, ADT-123-1, or ABC-S-123)",
               },
             },
             required: ["reference"],

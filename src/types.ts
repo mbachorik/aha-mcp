@@ -15,6 +15,10 @@ export interface RequirementResponse {
   requirement: Record;
 }
 
+export interface InitiativeResponse {
+  initiative: Record;
+}
+
 export interface PageResponse {
   page: {
     name: string;
@@ -33,6 +37,7 @@ export interface PageResponse {
 // Regular expressions for validating reference numbers
 export const FEATURE_REF_REGEX = /^([A-Z][A-Z0-9]*)-(\d+)$/;
 export const REQUIREMENT_REF_REGEX = /^([A-Z][A-Z0-9]*)-(\d+)-(\d+)$/;
+export const INITIATIVE_REF_REGEX = /^([A-Z][A-Z0-9]*)-S-(\d+)$/;
 export const NOTE_REF_REGEX = /^([A-Z][A-Z0-9]*)-N-(\d+)$/;
 
 export interface SearchNode {

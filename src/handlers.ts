@@ -3,10 +3,12 @@ import { GraphQLClient } from "graphql-request";
 import {
   FEATURE_REF_REGEX,
   REQUIREMENT_REF_REGEX,
+  INITIATIVE_REF_REGEX,
   NOTE_REF_REGEX,
   Record,
   FeatureResponse,
   RequirementResponse,
+  InitiativeResponse,
   PageResponse,
   SearchResponse,
 } from "./types.js";
@@ -18,7 +20,35 @@ import {
 } from "./queries.js";
 
 export class Handlers {
-  constructor(private client: GraphQLClient) {}
+  constructor(
+    private client: GraphQLClient,
+    private restApiBaseUrl: string,
+    private authToken: string
+  ) {}
+
+  private async getInitiative(reference: string): Promise<Record | undefined> {
+    const response = await fetch(
+      `${this.restApiBaseUrl}/initiatives/${encodeURIComponent(reference)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authToken}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (response.status === 404) {
+      return undefined;
+    }
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`REST ${response.status}: ${body}`);
+    }
+
+    const data = (await response.json()) as InitiativeResponse;
+    return data.initiative;
+  }
 
   async handleGetRecord(request: any) {
     const { reference } = request.params.arguments as { reference: string };
@@ -47,10 +77,12 @@ export class Handlers {
           { id: reference }
         );
         result = data.requirement;
+      } else if (INITIATIVE_REF_REGEX.test(reference)) {
+        result = await this.getInitiative(reference);
       } else {
         throw new McpError(
           ErrorCode.InvalidParams,
-          "Invalid reference number format. Expected DEVELOP-123 or ADT-123-1"
+          "Invalid reference number format. Expected DEVELOP-123, ADT-123-1, or ABC-S-123"
         );
       }
 
