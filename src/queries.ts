@@ -39,6 +39,17 @@ export const getRequirementQuery = `
   }
 `;
 
+export const getEpicQuery = `
+  query GetEpic($id: ID!) {
+    epic(id: $id) {
+      name
+      description {
+        markdownBody
+      }
+    }
+  }
+`;
+
 export const searchDocumentsQuery = `
   query SearchDocuments($query: String!, $searchableType: [String!]!) {
     searchDocuments(filters: {query: $query, searchableType: $searchableType}) {

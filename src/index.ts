@@ -70,14 +70,14 @@ class AhaMcp {
         {
           name: "get_record",
           description:
-            "Get an Aha! feature, requirement, or initiative by reference number",
+            "Get an Aha! feature, requirement, initiative, or epic by reference number",
           inputSchema: {
             type: "object",
             properties: {
               reference: {
                 type: "string",
                 description:
-                  "Reference number (e.g., DEVELOP-123, ADT-123-1, or ABC-S-123)",
+                  "Reference number (e.g., DEVELOP-123, ADT-123-1, ABC-S-123, or ABC-E-123)",
               },
             },
             required: ["reference"],

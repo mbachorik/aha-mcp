@@ -4,17 +4,20 @@ import {
   FEATURE_REF_REGEX,
   REQUIREMENT_REF_REGEX,
   INITIATIVE_REF_REGEX,
+  EPIC_REF_REGEX,
   NOTE_REF_REGEX,
   Record,
   FeatureResponse,
   RequirementResponse,
   InitiativeResponse,
+  EpicResponse,
   PageResponse,
   SearchResponse,
 } from "./types.js";
 import {
   getFeatureQuery,
   getRequirementQuery,
+  getEpicQuery,
   getPageQuery,
   searchDocumentsQuery,
 } from "./queries.js";
@@ -79,10 +82,15 @@ export class Handlers {
         result = data.requirement;
       } else if (INITIATIVE_REF_REGEX.test(reference)) {
         result = await this.getInitiative(reference);
+      } else if (EPIC_REF_REGEX.test(reference)) {
+        const data = await this.client.request<EpicResponse>(getEpicQuery, {
+          id: reference,
+        });
+        result = data.epic;
       } else {
         throw new McpError(
           ErrorCode.InvalidParams,
-          "Invalid reference number format. Expected DEVELOP-123, ADT-123-1, or ABC-S-123"
+          "Invalid reference number format. Expected DEVELOP-123, ADT-123-1, ABC-S-123, or ABC-E-123"
         );
       }
 
