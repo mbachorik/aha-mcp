@@ -105,6 +105,52 @@ export const getEpicQuery = `
       description {
         markdownBody
       }
+      workflow_status {
+        id
+        name
+        complete
+        color
+        workflow_status_category {
+          id
+          name
+        }
+      }
+      custom_fields {
+        id
+        key
+        name
+        type
+        value
+        updatedAt
+      }
+      created_at
+      updated_at
+      assigned_to_user {
+        id
+        name
+        email
+      }
+      release {
+        id
+        name
+        reference_num
+        start_date
+        release_date
+      }
+      initiative {
+        id
+        name
+        reference_num
+      }
+      goals {
+        id
+        name
+      }
+      master_features(limit: 10) {
+        id
+        name
+        reference_num
+      }
     }
   }
 `;
