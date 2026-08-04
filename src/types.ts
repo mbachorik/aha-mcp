@@ -2,9 +2,44 @@ export interface Description {
   htmlBody: string;
 }
 
+export interface CustomField {
+  id: string;
+  key: string;
+  name: string;
+  type: string;
+  value: any;
+  updatedAt: string;
+}
+
+export interface WorkflowStatusCategory {
+  id: string;
+  name: string;
+}
+
+export interface WorkflowStatus {
+  id: string;
+  name: string;
+  complete: boolean;
+  color: string;
+  workflow_status_category?: WorkflowStatusCategory;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
 export interface Record {
   name: string;
   description: Description;
+  workflow_status?: WorkflowStatus;
+  custom_fields?: CustomField[];
+  created_at?: string;
+  updated_at?: string;
+  assigned_to_user?: User | null;
+  // Allow type-specific fields
+  [key: string]: any;
 }
 
 export interface FeatureResponse {
