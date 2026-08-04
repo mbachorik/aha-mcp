@@ -56,7 +56,7 @@ export class Handlers {
   async handleGetRecord(request: any) {
     // Handlers receive unified Record objects from enhanced GraphQL queries.
     // All types (epic, feature, requirement) now return consistent rich fields:
-    // workflow_status, custom_fields, assigned_to_user, and per-type extensions.
+    // workflowStatus, customFieldValues, assignedToUser, and per-type extensions.
     // Initiative uses REST API and maps to the same Record interface.
     const { reference } = request.params.arguments as { reference: string };
 

@@ -34,11 +34,11 @@ export interface User {
 export interface Record {
   name: string;
   description: Description;
-  workflow_status?: WorkflowStatus;
-  custom_fields?: CustomField[];
-  created_at?: string;
-  updated_at?: string;
-  assigned_to_user?: User | null;
+  workflowStatus?: WorkflowStatus;
+  customFieldValues?: CustomField[];
+  createdAt?: string;
+  updatedAt?: string;
+  assignedToUser?: User | null;
   // Allow type-specific fields
   [key: string]: any;
 }
