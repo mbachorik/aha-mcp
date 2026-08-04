@@ -53,6 +53,52 @@ export class Handlers {
     return data.initiative;
   }
 
+  private async getEpic(reference: string): Promise<Record | undefined> {
+    const response = await fetch(
+      `${this.restApiBaseUrl}/epics/${encodeURIComponent(reference)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authToken}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (response.status === 404) {
+      return undefined;
+    }
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`REST ${response.status}: ${body}`);
+    }
+
+    const data = (await response.json()) as any;
+    const epic = data.epic;
+
+    // Normalize REST API response to match Record interface
+    return {
+      name: epic.name,
+      description: { htmlBody: epic.description?.body || "" },
+      workflowStatus: epic.workflow_status ? {
+        id: epic.workflow_status.id,
+        name: epic.workflow_status.name,
+        color: typeof epic.workflow_status.color === 'string'
+          ? parseInt(epic.workflow_status.color, 16)
+          : epic.workflow_status.color || 0,
+      } : undefined,
+      customFieldValues: epic.custom_fields || [],
+      createdAt: epic.created_at,
+      updatedAt: epic.updated_at,
+      assignedToUser: epic.assigned_to_user,
+      // Include additional fields for reference
+      release: epic.release,
+      initiative: epic.initiative,
+      goals: epic.goals,
+      ...epic, // Spread all other fields
+    };
+  }
+
   async handleGetRecord(request: any) {
     // Handlers receive unified Record objects from enhanced GraphQL queries.
     // All types (epic, feature, requirement) now return consistent rich fields:
@@ -87,10 +133,7 @@ export class Handlers {
       } else if (INITIATIVE_REF_REGEX.test(reference)) {
         result = await this.getInitiative(reference);
       } else if (EPIC_REF_REGEX.test(reference)) {
-        const data = await this.client.request<EpicResponse>(getEpicQuery, {
-          id: reference,
-        });
-        result = data.epic;
+        result = await this.getEpic(reference);
       } else {
         throw new McpError(
           ErrorCode.InvalidParams,
