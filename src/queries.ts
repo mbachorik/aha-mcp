@@ -143,6 +143,39 @@ export const getRequirementQuery = `
       description {
         markdownBody
       }
+      workflow_status {
+        id
+        name
+        complete
+        color
+        workflow_status_category {
+          id
+          name
+        }
+      }
+      custom_fields {
+        id
+        key
+        name
+        type
+        value
+        updatedAt
+      }
+      created_at
+      updated_at
+      assigned_to_user {
+        id
+        name
+        email
+      }
+      feature {
+        id
+        name
+        reference_num
+      }
+      original_estimate
+      work_done
+      remaining_estimate
     }
   }
 `;
