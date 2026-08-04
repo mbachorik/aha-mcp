@@ -1,3 +1,62 @@
+export const commonFieldsFragment = `
+  fragment CommonFields on Record {
+    name
+    description {
+      markdownBody
+    }
+    workflow_status {
+      id
+      name
+      complete
+      color
+      workflow_status_category {
+        id
+        name
+      }
+    }
+    custom_fields {
+      id
+      key
+      name
+      type
+      value
+      updatedAt
+    }
+    created_at
+    updated_at
+    assigned_to_user {
+      id
+      name
+      email
+    }
+  }
+`;
+
+export const releaseFragment = `
+  fragment ReleaseInfo on Release {
+    id
+    name
+    reference_num
+    start_date
+    release_date
+  }
+`;
+
+export const goalFragment = `
+  fragment GoalInfo on Goal {
+    id
+    name
+  }
+`;
+
+export const referenceFragment = `
+  fragment ReferenceInfo on Referenceable {
+    id
+    name
+    reference_num
+  }
+`;
+
 export const getPageQuery = `
   query GetPage($id: ID!, $includeParent: Boolean!) {
     page(id: $id) {
