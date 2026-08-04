@@ -83,6 +83,55 @@ export const getFeatureQuery = `
       description {
         markdownBody
       }
+      workflow_status {
+        id
+        name
+        complete
+        color
+        workflow_status_category {
+          id
+          name
+        }
+      }
+      custom_fields {
+        id
+        key
+        name
+        type
+        value
+        updatedAt
+      }
+      created_at
+      updated_at
+      assigned_to_user {
+        id
+        name
+        email
+      }
+      release {
+        id
+        name
+        reference_num
+        start_date
+        release_date
+      }
+      epic {
+        id
+        name
+        reference_num
+      }
+      master_feature {
+        id
+        name
+        reference_num
+      }
+      original_estimate
+      work_done
+      requirements {
+        id
+        name
+        reference_num
+      }
     }
   }
 `;
