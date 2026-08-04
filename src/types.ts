@@ -2,13 +2,16 @@ export interface Description {
   htmlBody: string;
 }
 
-export interface CustomField {
-  id: string;
+export interface FieldDefinition {
   key: string;
   name: string;
-  type: string;
+  valueType: string;
+}
+
+export interface CustomField {
+  id: string;
+  fieldDefinition: FieldDefinition;
   value: any;
-  updatedAt: string;
 }
 
 export interface WorkflowStatusCategory {
@@ -19,9 +22,7 @@ export interface WorkflowStatusCategory {
 export interface WorkflowStatus {
   id: string;
   name: string;
-  complete: boolean;
-  color: string;
-  workflow_status_category?: WorkflowStatusCategory;
+  color: number;
 }
 
 export interface User {

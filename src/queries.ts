@@ -1,30 +1,22 @@
 export const commonFieldsFragment = `
   fragment CommonFields on Record {
+    id
     name
     description {
       markdownBody
     }
-    workflow_status {
+    workflowStatus {
       id
       name
-      complete
       color
-      workflow_status_category {
-        id
-        name
-      }
     }
-    custom_fields {
+    customFieldValues {
       id
-      key
-      name
-      type
       value
-      updatedAt
     }
-    created_at
-    updated_at
-    assigned_to_user {
+    createdAt
+    updatedAt
+    assignedToUser {
       id
       name
       email
@@ -79,31 +71,23 @@ export const getPageQuery = `
 export const getFeatureQuery = `
   query GetFeature($id: ID!) {
     feature(id: $id) {
+      id
       name
       description {
         markdownBody
       }
-      workflow_status {
+      workflowStatus {
         id
         name
-        complete
         color
-        workflow_status_category {
-          id
-          name
-        }
       }
-      custom_fields {
+      customFieldValues {
         id
-        key
-        name
-        type
         value
-        updatedAt
       }
-      created_at
-      updated_at
-      assigned_to_user {
+      createdAt
+      updatedAt
+      assignedToUser {
         id
         name
         email
@@ -111,26 +95,17 @@ export const getFeatureQuery = `
       release {
         id
         name
-        reference_num
-        start_date
-        release_date
+        referenceNum
       }
       epic {
         id
         name
-        reference_num
+        referenceNum
       }
-      master_feature {
-        id
-        name
-        reference_num
-      }
-      original_estimate
-      work_done
       requirements {
         id
         name
-        reference_num
+        referenceNum
       }
     }
   }
@@ -139,31 +114,23 @@ export const getFeatureQuery = `
 export const getRequirementQuery = `
   query GetRequirement($id: ID!) {
     requirement(id: $id) {
+      id
       name
       description {
         markdownBody
       }
-      workflow_status {
+      workflowStatus {
         id
         name
-        complete
         color
-        workflow_status_category {
-          id
-          name
-        }
       }
-      custom_fields {
+      customFieldValues {
         id
-        key
-        name
-        type
         value
-        updatedAt
       }
-      created_at
-      updated_at
-      assigned_to_user {
+      createdAt
+      updatedAt
+      assignedToUser {
         id
         name
         email
@@ -171,11 +138,8 @@ export const getRequirementQuery = `
       feature {
         id
         name
-        reference_num
+        referenceNum
       }
-      original_estimate
-      work_done
-      remaining_estimate
     }
   }
 `;
@@ -183,31 +147,23 @@ export const getRequirementQuery = `
 export const getEpicQuery = `
   query GetEpic($id: ID!) {
     epic(id: $id) {
+      id
       name
       description {
         markdownBody
       }
-      workflow_status {
+      workflowStatus {
         id
         name
-        complete
         color
-        workflow_status_category {
-          id
-          name
-        }
       }
-      custom_fields {
+      customFieldValues {
         id
-        key
-        name
-        type
         value
-        updatedAt
       }
-      created_at
-      updated_at
-      assigned_to_user {
+      createdAt
+      updatedAt
+      assignedToUser {
         id
         name
         email
@@ -215,23 +171,16 @@ export const getEpicQuery = `
       release {
         id
         name
-        reference_num
-        start_date
-        release_date
+        referenceNum
       }
       initiative {
         id
         name
-        reference_num
+        referenceNum
       }
       goals {
         id
         name
-      }
-      master_features(limit: 10) {
-        id
-        name
-        reference_num
       }
     }
   }
