@@ -43,11 +43,41 @@ export interface Record {
 }
 
 export interface FeatureResponse {
-  feature: Record;
+  feature: Record & {
+    release?: {
+      id: string;
+      name: string;
+      reference_num: string;
+      start_date?: string;
+      release_date?: string;
+    };
+    epic?: {
+      id: string;
+      name: string;
+      reference_num: string;
+    };
+    master_feature?: {
+      id: string;
+      name: string;
+      reference_num: string;
+    };
+    original_estimate?: number;
+    work_done?: number;
+    requirements_count?: number;
+  };
 }
 
 export interface RequirementResponse {
-  requirement: Record;
+  requirement: Record & {
+    feature?: {
+      id: string;
+      name: string;
+      reference_num: string;
+    };
+    original_estimate?: number;
+    work_done?: number;
+    remaining_estimate?: number;
+  };
 }
 
 export interface InitiativeResponse {
@@ -55,7 +85,29 @@ export interface InitiativeResponse {
 }
 
 export interface EpicResponse {
-  epic: Record;
+  epic: Record & {
+    release?: {
+      id: string;
+      name: string;
+      reference_num: string;
+      start_date?: string;
+      release_date?: string;
+    };
+    initiative?: {
+      id: string;
+      name: string;
+      reference_num: string;
+    };
+    goals?: Array<{
+      id: string;
+      name: string;
+    }>;
+    master_features?: Array<{
+      id: string;
+      name: string;
+      reference_num: string;
+    }>;
+  };
 }
 
 export interface PageResponse {
