@@ -152,11 +152,11 @@ Add a configuration to your `claude_desktop_config.json`:
 
 ### 1. get_record
 
-Retrieves an Aha! feature or requirement by reference number.
+Retrieves an Aha! record (feature, requirement, epic, or initiative) by reference number, returning rich fields including workflow status, custom fields, and assigned user information.
 
 **Parameters:**
 
-- `reference` (required): Reference number of the feature or requirement (e.g., "DEVELOP-123")
+- `reference` (required): Reference number of the record (e.g., "DEVELOP-123" for features, "DEVELOP-123-1" for requirements, "DEVELOP-E-1" for epics, "DEVELOP-S-1" for initiatives)
 
 **Example:**
 
@@ -170,13 +170,46 @@ Retrieves an Aha! feature or requirement by reference number.
 
 ```json
 {
-  "reference_num": "DEVELOP-123",
+  "id": "DEVELOP-123",
   "name": "Feature name",
-  "description": "Feature description",
-  "workflow_status": {
+  "description": {
+    "markdownBody": "Feature description with rich formatting"
+  },
+  "workflowStatus": {
+    "id": "123456",
     "name": "In development",
-    "id": "123456"
-  }
+    "color": 16711680
+  },
+  "customFieldValues": [
+    {
+      "id": "custom_1",
+      "value": "Priority: High"
+    }
+  ],
+  "createdAt": "2024-01-15T10:30:00Z",
+  "updatedAt": "2024-08-04T14:22:00Z",
+  "assignedToUser": {
+    "id": "user_123",
+    "name": "Jane Doe",
+    "email": "jane@example.com"
+  },
+  "release": {
+    "id": "release_1",
+    "name": "Q4 2024",
+    "referenceNum": "Q4"
+  },
+  "epic": {
+    "id": "epic_1",
+    "name": "Platform Modernization",
+    "referenceNum": "DEVELOP-10"
+  },
+  "requirements": [
+    {
+      "id": "req_1",
+      "name": "Database migration",
+      "referenceNum": "DEVELOP-123-1"
+    }
+  ]
 }
 ```
 
