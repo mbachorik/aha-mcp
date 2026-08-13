@@ -146,6 +146,12 @@ export const getRequirementQuery = `
         name
         referenceNum
       }
+      integrationFields {
+        id
+        name
+        value
+        serviceName
+      }
     }
   }
 `;
