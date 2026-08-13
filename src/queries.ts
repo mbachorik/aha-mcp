@@ -107,7 +107,7 @@ export const getFeatureQuery = `
         name
         referenceNum
       }
-      integrationFields {
+      integrationLinks {
         id
         name
         value
@@ -146,7 +146,7 @@ export const getRequirementQuery = `
         name
         referenceNum
       }
-      integrationFields {
+      integrationLinks {
         id
         name
         value

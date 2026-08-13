@@ -46,7 +46,7 @@ export interface Record {
   createdAt?: string;
   updatedAt?: string;
   assignedToUser?: User | null;
-  integrationFields?: IntegrationField[];
+  integrationLinks?: IntegrationField[];
   // Allow type-specific fields
   [key: string]: any;
 }
