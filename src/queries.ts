@@ -108,10 +108,7 @@ export const getFeatureQuery = `
         referenceNum
       }
       integrationLinks {
-        id
         name
-        value
-        serviceName
       }
     }
   }
@@ -147,10 +144,7 @@ export const getRequirementQuery = `
         referenceNum
       }
       integrationLinks {
-        id
         name
-        value
-        serviceName
       }
     }
   }

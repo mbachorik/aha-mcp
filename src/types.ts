@@ -31,11 +31,8 @@ export interface User {
   email: string;
 }
 
-export interface IntegrationField {
-  id: string;
+export interface IntegrationLink {
   name: string;
-  value: any;
-  serviceName?: string;
 }
 
 export interface Record {
@@ -46,7 +43,7 @@ export interface Record {
   createdAt?: string;
   updatedAt?: string;
   assignedToUser?: User | null;
-  integrationLinks?: IntegrationField[];
+  integrationLinks?: IntegrationLink[];
   // Allow type-specific fields
   [key: string]: any;
 }
