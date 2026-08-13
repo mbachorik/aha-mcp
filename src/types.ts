@@ -31,6 +31,13 @@ export interface User {
   email: string;
 }
 
+export interface IntegrationField {
+  id: string;
+  name: string;
+  value: any;
+  serviceName?: string;
+}
+
 export interface Record {
   name: string;
   description: Description;
@@ -39,6 +46,7 @@ export interface Record {
   createdAt?: string;
   updatedAt?: string;
   assignedToUser?: User | null;
+  integrationFields?: IntegrationField[];
   // Allow type-specific fields
   [key: string]: any;
 }

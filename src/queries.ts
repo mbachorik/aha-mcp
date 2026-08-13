@@ -107,6 +107,12 @@ export const getFeatureQuery = `
         name
         referenceNum
       }
+      integrationFields {
+        id
+        name
+        value
+        serviceName
+      }
     }
   }
 `;
