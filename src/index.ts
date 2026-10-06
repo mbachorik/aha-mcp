@@ -122,6 +122,35 @@ class AhaMcp {
             required: ["query"],
           },
         },
+        {
+          name: "get_custom_pivot",
+          description:
+            "Run a saved Aha! custom report (list report or pivot table) and return its data. List view returns column titles plus rows of plain values (all pages). Pivot view returns aggregated cells, each with its row/column header path and field title.",
+          inputSchema: {
+            type: "object",
+            properties: {
+              report: {
+                type: "string",
+                description:
+                  "Report ID (e.g. 7498703245593563916) or a URL like https://<domain>.aha.io/bookmarks/custom_pivots/7498703245593563916/...",
+              },
+              view: {
+                type: "string",
+                enum: ["list", "pivot"],
+                description:
+                  "list = underlying records as a table; pivot = aggregated pivot table as configured in Aha!",
+                default: "list",
+              },
+              raw: {
+                type: "boolean",
+                description:
+                  "Return the unmodified Aha! response (includes large HTML-rendered values)",
+                default: false,
+              },
+            },
+            required: ["report"],
+          },
+        },
       ],
     }));
 
@@ -132,6 +161,8 @@ class AhaMcp {
         return this.handlers.handleGetPage(request);
       } else if (request.params.name === "search_documents") {
         return this.handlers.handleSearchDocuments(request);
+      } else if (request.params.name === "get_custom_pivot") {
+        return this.handlers.handleGetCustomPivot(request);
       }
 
       throw new McpError(

@@ -279,6 +279,39 @@ Searches for Aha! documents.
 }
 ```
 
+### 4. get_custom_pivot
+
+Runs a saved custom report (list report or pivot table) via `GET /api/v1/bookmarks/custom_pivots/:id` and returns its data. Any saved report works regardless of how it is configured; the token's user must be able to see it.
+
+**Parameters:**
+
+- `report` (required): Report ID, or the report URL (`https://<domain>.aha.io/bookmarks/custom_pivots/<id>/...`)
+- `view` (optional): `list` (default) returns the underlying records, following all pages; `pivot` returns the aggregated pivot table
+- `raw` (optional): Return the unmodified Aha! response, including HTML-rendered values. Defaults to `false`
+
+**Response (list view, compact):**
+
+```json
+{
+  "view": "list",
+  "totalRecords": 2,
+  "columns": [{ "title": "Product name", "table": "projects", "field": "name" }],
+  "rows": [["Product A"], ["Product B"]],
+  "truncated": false
+}
+```
+
+**Response (pivot view, compact):** each cell carries its row and column header path.
+
+```json
+{
+  "view": "pivot",
+  "rowGrouping": ["Product name", "Quarter"],
+  "columnGrouping": ["Status"],
+  "cells": [{ "row": ["Product A", "2026-Q4"], "column": ["Done"], "field": "Estimate", "value": 40 }]
+}
+```
+
 ## Example Queries
 
 - "Get feature DEVELOP-123"

@@ -21,6 +21,17 @@ import {
   getPageQuery,
   searchDocumentsQuery,
 } from "./queries.js";
+import {
+  compactListReport,
+  compactPivotReport,
+  fetchWithRetry,
+  LIST_PAGE_SIZE,
+  ListReportResponse,
+  MAX_LIST_PAGES,
+  parseReportId,
+  PivotReportResponse,
+  PivotView,
+} from "./pivots.js";
 
 export class Handlers {
   constructor(
@@ -273,6 +284,105 @@ export class Handlers {
       throw new McpError(
         ErrorCode.InternalError,
         `Failed to search documents: ${errorMessage}`
+      );
+    }
+  }
+
+  private async fetchPivotPage(
+    reportId: string,
+    params: URLSearchParams
+  ): Promise<any> {
+    const response = await fetchWithRetry(
+      `${this.restApiBaseUrl}/bookmarks/custom_pivots/${reportId}?${params}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authToken}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    if (response.status === 404) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        `Custom pivot ${reportId} not found or not accessible with this token`
+      );
+    }
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`REST ${response.status}: ${body.slice(0, 500)}`);
+    }
+
+    return response.json();
+  }
+
+  async handleGetCustomPivot(request: any) {
+    const {
+      report,
+      view = "list",
+      raw = false,
+    } = request.params.arguments as {
+      report: string;
+      view?: PivotView;
+      raw?: boolean;
+    };
+
+    const reportId = report ? parseReportId(report) : undefined;
+    if (!reportId) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "report must be a numeric report ID or an Aha! /bookmarks/custom_pivots/... URL"
+      );
+    }
+    if (view !== "list" && view !== "pivot") {
+      throw new McpError(ErrorCode.InvalidParams, 'view must be "list" or "pivot"');
+    }
+
+    try {
+      let result: unknown;
+
+      if (view === "pivot") {
+        const data = (await this.fetchPivotPage(
+          reportId,
+          new URLSearchParams({ view: "pivot" })
+        )) as PivotReportResponse;
+        result = raw ? data : compactPivotReport(data);
+      } else {
+        const pages: ListReportResponse[] = [];
+        let totalPages = 1;
+        for (let page = 1; page <= Math.min(totalPages, MAX_LIST_PAGES); page++) {
+          const data = (await this.fetchPivotPage(
+            reportId,
+            new URLSearchParams({
+              view: "list",
+              page: String(page),
+              per_page: String(LIST_PAGE_SIZE),
+            })
+          )) as ListReportResponse;
+          pages.push(data);
+          totalPages = data.pagination?.[0]?.total_pages ?? 1;
+        }
+        const truncated = totalPages > MAX_LIST_PAGES;
+        result = raw
+          ? { pages, truncated }
+          : { ...compactListReport(pages), truncated };
+      }
+
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      if (error instanceof McpError) {
+        throw error;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("API Error:", errorMessage);
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Failed to fetch custom pivot: ${errorMessage}`
       );
     }
   }
