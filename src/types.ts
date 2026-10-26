@@ -137,6 +137,7 @@ export const REQUIREMENT_REF_REGEX = /^([A-Z][A-Z0-9]*)-(\d+)-(\d+)$/;
 export const INITIATIVE_REF_REGEX = /^([A-Z][A-Z0-9]*)-S-(\d+)$/;
 export const EPIC_REF_REGEX = /^([A-Z][A-Z0-9]*)-E-(\d+)$/;
 export const NOTE_REF_REGEX = /^([A-Z][A-Z0-9]*)-N-(\d+)$/;
+export const IDEA_REF_REGEX = /^([A-Z][A-Z0-9]*)-I-(\d+)$/;
 
 export interface SearchNode {
   name: string | null;

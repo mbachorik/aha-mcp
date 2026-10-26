@@ -312,6 +312,27 @@ Runs a saved custom report (list report or pivot table) via `GET /api/v1/bookmar
 }
 ```
 
+### 5. get_idea
+
+Fetches an idea via `GET /api/v1/ideas/:id` (description, status, votes, categories, custom fields, promoted feature) and optionally its comments via `GET /api/v1/ideas/:id/comments`.
+
+**Parameters:**
+
+- `reference` (required): Idea reference number (e.g., `PO-I-47`, `ABC-I-123`)
+- `includeComments` (optional): Also fetch the idea's comments (up to 10 pages of 200). Defaults to `false`
+
+**Response:**
+
+```json
+{
+  "idea": { "reference_num": "PO-I-47", "name": "...", "workflow_status": { "name": "..." } },
+  "comments": [],
+  "truncated": false
+}
+```
+
+`comments` and `truncated` are only present when `includeComments` is `true`.
+
 ## Example Queries
 
 - "Get feature DEVELOP-123"
@@ -319,6 +340,7 @@ Runs a saved custom report (list report or pivot table) via `GET /api/v1/bookmar
 - "Search for pages about launch planning"
 - "Get requirement ADT-123-1"
 - "Find all pages mentioning Q2 goals"
+- "Get idea PO-I-47 with its comments"
 
 ## Configuration Options
 

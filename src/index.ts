@@ -104,6 +104,26 @@ class AhaMcp {
           },
         },
         {
+          name: "get_idea",
+          description:
+            "Get an Aha! idea by reference number: description, status, votes, categories, custom fields and promoted feature, optionally with comments",
+          inputSchema: {
+            type: "object",
+            properties: {
+              reference: {
+                type: "string",
+                description: "Reference number (e.g., PO-I-47 or ABC-I-123)",
+              },
+              includeComments: {
+                type: "boolean",
+                description: "Also fetch the idea's comments",
+                default: false,
+              },
+            },
+            required: ["reference"],
+          },
+        },
+        {
           name: "search_documents",
           description: "Search for Aha! documents",
           inputSchema: {
@@ -159,6 +179,8 @@ class AhaMcp {
         return this.handlers.handleGetRecord(request);
       } else if (request.params.name === "get_page") {
         return this.handlers.handleGetPage(request);
+      } else if (request.params.name === "get_idea") {
+        return this.handlers.handleGetIdea(request);
       } else if (request.params.name === "search_documents") {
         return this.handlers.handleSearchDocuments(request);
       } else if (request.params.name === "get_custom_pivot") {

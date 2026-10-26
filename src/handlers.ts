@@ -6,6 +6,7 @@ import {
   INITIATIVE_REF_REGEX,
   EPIC_REF_REGEX,
   NOTE_REF_REGEX,
+  IDEA_REF_REGEX,
   Record,
   FeatureResponse,
   RequirementResponse,
@@ -32,6 +33,9 @@ import {
   PivotReportResponse,
   PivotView,
 } from "./pivots.js";
+
+const COMMENT_PAGE_SIZE = 200;
+const MAX_COMMENT_PAGES = 10;
 
 export class Handlers {
   constructor(
@@ -242,6 +246,101 @@ export class Handlers {
       throw new McpError(
         ErrorCode.InternalError,
         `Failed to fetch page: ${errorMessage}`
+      );
+    }
+  }
+
+  private async fetchIdeaJson(path: string): Promise<any | undefined> {
+    const response = await fetchWithRetry(`${this.restApiBaseUrl}${path}`, {
+      headers: {
+        Authorization: `Bearer ${this.authToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (response.status === 404) {
+      return undefined;
+    }
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`REST ${response.status}: ${body.slice(0, 500)}`);
+    }
+
+    return response.json();
+  }
+
+  async handleGetIdea(request: any) {
+    const { reference, includeComments = false } = request.params
+      .arguments as {
+      reference: string;
+      includeComments?: boolean;
+    };
+
+    if (!reference) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Reference number is required"
+      );
+    }
+
+    if (!IDEA_REF_REGEX.test(reference)) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "Invalid reference number format. Expected ABC-I-123"
+      );
+    }
+
+    try {
+      const ideaPath = `/ideas/${encodeURIComponent(reference)}`;
+      const data = await this.fetchIdeaJson(ideaPath);
+
+      if (!data?.idea) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `No idea found for reference ${reference}`,
+            },
+          ],
+        };
+      }
+
+      const result: { idea: unknown; comments?: unknown[]; truncated?: boolean } =
+        { idea: data.idea };
+
+      if (includeComments) {
+        const comments: unknown[] = [];
+        let totalPages = 1;
+        for (
+          let page = 1;
+          page <= Math.min(totalPages, MAX_COMMENT_PAGES);
+          page++
+        ) {
+          const pageData = await this.fetchIdeaJson(
+            `${ideaPath}/comments?page=${page}&per_page=${COMMENT_PAGE_SIZE}`
+          );
+          comments.push(...(pageData?.comments ?? []));
+          totalPages = pageData?.pagination?.total_pages ?? 1;
+        }
+        result.comments = comments;
+        result.truncated = totalPages > MAX_COMMENT_PAGES;
+      }
+
+      return {
+        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      if (error instanceof McpError) {
+        throw error;
+      }
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error("API Error:", errorMessage);
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Failed to fetch idea: ${errorMessage}`
       );
     }
   }
